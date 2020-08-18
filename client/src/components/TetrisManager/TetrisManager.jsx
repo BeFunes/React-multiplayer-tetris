@@ -4,8 +4,8 @@ import React from "react";
 import Tetris from "../Tetris/Tetris";
 import StartMenu from "../StartMenu/StartMenu";
 // utils
-import Events from "../../utils/events";
-import ConnectionManager from "../../utils/connectionManager";
+import Events from "../../utils/Events";
+import ConnectionManager from "../../utils/ConnectionManager";
 // styled components
 import { StyledTetrisManager } from "./TetrisManager.styles";
 
@@ -15,30 +15,29 @@ class TetrisManager extends React.Component {
     this.state = {
       players: new Map(),
       highscores: [],
-      isStartGame: true
+      isStartGame: true,
     };
   }
 
   componentDidMount() {
     this.createPlayer();
     this.connectionManager = new ConnectionManager(this);
-    // this.connectionManager.connect("ws://localhost:3001");
-    this.connectionManager.connect("wss://react-tetris-api.herokuapp.com/");
+    this.connectionManager.connect("ws://localhost:3001");
+    // this.connectionManager.connect("wss://react-tetris-api.herokuapp.com/");
   }
 
-  connectToServer = () => {
-  };
+  connectToServer = () => {};
 
-  setHighscore = newHighscore => this.setState({ highscores: newHighscore });
+  setHighscore = (newHighscore) => this.setState({ highscores: newHighscore });
 
-  onSubmitHighscore = newHighscoreArr => {
+  onSubmitHighscore = (newHighscoreArr) => {
     this.sendDataToServer({
       type: "update-highscore",
-      list: newHighscoreArr
+      list: newHighscoreArr,
     });
   };
 
-  sendDataToServer = data => {
+  sendDataToServer = (data) => {
     if (this.connectionManager) {
       this.connectionManager.send(data);
     }
@@ -47,16 +46,16 @@ class TetrisManager extends React.Component {
   createPlayer = (playerId = "localPlayer", gameState = {}) => {
     const events = new Events();
     const isLocalPlayer = this.state.players.size === 0 ? true : false;
-    this.setState(prev =>
+    this.setState((prev) =>
       prev.players.set(playerId, { events, isLocalPlayer, gameState })
     );
   };
 
-  removePlayer = id => {
-    this.setState(prev => prev.players.delete(id));
+  removePlayer = (id) => {
+    this.setState((prev) => prev.players.delete(id));
   };
 
-  sortPlayers = players => {
+  sortPlayers = (players) => {
     // console.log("woop", this.state.players)
   };
 
@@ -64,19 +63,19 @@ class TetrisManager extends React.Component {
     const player = this.state.players.get(id);
     player.gameState = {
       ...player.gameState,
-      [newState.prop]: newState.value
+      [newState.prop]: newState.value,
     };
-    this.setState(prev => prev.players.set(id, player));
+    this.setState((prev) => prev.players.set(id, player));
   };
 
   render() {
     return (
       <StyledTetrisManager>
         {!this.state.isStartGame ? (
-          <StartMenu/>
+          <StartMenu />
         ) : (
           [
-            ...this.state.players.entries()
+            ...this.state.players.entries(),
           ].map(([playerId, { events, isLocalPlayer, gameState }]) => (
             <Tetris
               key={playerId}
